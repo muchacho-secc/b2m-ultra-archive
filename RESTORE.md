@@ -11,6 +11,7 @@ Archive taken **2026-10-30**, after the Bondi to Manly Ultra. Goal: bring the ap
 | `remap_user.sql` | Re-points restored rows at a new Supabase user id |
 | `data/*.json` | Live data: plan (`b2mu.plans`), weeks, sessions, Strava activities |
 | `skills/` | The 13 B2MU Claude skills (design/knowledge for schema, coach context, mutations, readiness score, Strava/WHOOP integration, plan generation, UI) |
+| `langsmith-prompts/` | The 5 LangSmith Context Hub prompts the coach pulls at runtime (`b2mu-coach-system-prompt`, `b2mu-ultra-running-science`, `b2mu-course-detail`, `b2mu-athlete-whoop-profile`, `b2mu-athlete-crash-history`), exported by you on 2026-10-30 |
 | `knowledge/project-notes.md` | Project memory: context, architecture lessons, workflow, stack and IDs |
 | `MANIFEST.md` | Checksums for every data file and what was verified |
 
@@ -23,7 +24,7 @@ Production was deployed from `master` at commit `e17ea6fe15168d8a440d0bacb89939e
 
 - **Secrets / env var values.** Re-create them (names below).
 - **Strava and WHOOP tokens.** Credentials, left out on purpose; they would be expired anyway. Re-run OAuth.
-- **LangSmith Context Hub prompts** (`b2mu-coach-system-prompt`, `b2mu-ultra-running-science`, `b2mu-course-detail`, `b2mu-athlete-whoop-profile`, `b2mu-athlete-crash-history`). They live in LangSmith. Export them there if you want them preserved.
+- **LangSmith project history / traces** (`b2mu-coach`, `b2mu-coach-dev`). Only the five Context Hub prompts are archived (see `langsmith-prompts/`), not run traces.
 - **Old plan rows**: 15 test plans from May 2026 in `b2mu.plans` and the older May snapshot in `public.plans`. Only the latest live plan (27 Oct 2026) is kept.
 - **`b2mu_dev` data** (1 test plan, 6 Strava rows). Structure is identical to `b2mu`; see the note at the top of `schema.sql`.
 
@@ -43,8 +44,9 @@ Production was deployed from `master` at commit `e17ea6fe15168d8a440d0bacb89939e
    - root `wrangler.toml`: worker `b2m-ultra-coach-api` (+ `-dev`)
    - `worker/langgraph/wrangler.toml`: worker `b2m-ultra-coach-lg-api` (+ `-dev`), with a weekly cron `0 10 * * SUN` (Sunday 8pm AEST)
    - Secrets to set with `wrangler secret put`: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` (and/or `SUPABASE_SERVICE_KEY`; the worker prefers the service key if present), `B2MU_TELEGRAM_BOT_TOKEN`, `B2MU_TELEGRAM_CHAT_ID`, plus the OpenRouteService key if you build Route Creator.
-9. **Reconnect integrations:** redo the Strava OAuth and WHOOP OAuth flows in the app (this repopulates `b2mu.strava_tokens` / `b2mu.whoop_tokens`). Recreate the Telegram bot token if the old bot was removed.
-10. **Optional migration:** `supabase/migrations/003_add_mutation_status.sql` in the code repo adds `status` / `proposed_at` columns to `b2mu.mutations` (pending-mutation workflow). It was **never applied** to the live database, so the archived schema does not include it. Apply it if you restore the weekly review agent's pending-mutation feature.
+9. **Restore the coach prompts:** the LangGraph worker pulls these from LangSmith Context Hub by name. In LangSmith (APAC endpoint), recreate each of the five entries under the same name using the matching file in `langsmith-prompts/`, and make sure the LangGraph worker has the LangSmith secrets/vars it reads (`LANGSMITH_API_KEY`, `LANGSMITH_ENDPOINT`, `LANGSMITH_ORG_ID`, `LANGSMITH_PROJECT`, `LANGSMITH_TRACING`; found in `worker/langgraph/index.js`, which calls `client.pullAgent(<prompt name>)`). Without the prompts the coach has no system prompt.
+10. **Reconnect integrations:** redo the Strava OAuth and WHOOP OAuth flows in the app (this repopulates `b2mu.strava_tokens` / `b2mu.whoop_tokens`). Recreate the Telegram bot token if the old bot was removed.
+11. **Optional migration:** `supabase/migrations/003_add_mutation_status.sql` in the code repo adds `status` / `proposed_at` columns to `b2mu.mutations` (pending-mutation workflow). It was **never applied** to the live database, so the archived schema does not include it. Apply it if you restore the weekly review agent's pending-mutation feature.
 
 ## Things to know before you rely on this
 

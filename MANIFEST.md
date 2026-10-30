@@ -27,6 +27,11 @@ ac0bb48622fbfffef4776ed7b7c31b80b1cc5941a23e8c9c5a3b9d31ceefda39  data/b2mu_stra
 36cdb3092d0c6f118e38dcefded8c404aeab3cfa1e442bd037c7280bb8b68f26  data/public_sessions.json
 9be73d98303154fff3e8d90959ce01227ee27a9004ed0720c3cd8f32c1cff942  data/public_weeks.json
 dec4917da12ccdc23c47d410dcfffc97b803b2e6136e995e6b135d0f693e4ae1  knowledge/project-notes.md
-2dfac95723fcd385b67d6986bb376757d8c6d4ac8f59f650396eb47a69551540  RESTORE.md
+7f03fc76ab8f43bc7c16af53b457c41380ab93860091af0b8aafac17247a3759  RESTORE.md
+66d2fa9ae5d3a0a8ab56ee36fc6cd2c1b6262e0d6cfb09bafcbd16519703583f  langsmith-prompts/b2mu-athlete-crash-history/SKILL.md
+0e3b967c36de4b1773052fa90441899c20cf54fb1f61c5503bd7af165b23f233  langsmith-prompts/b2mu-athlete-whoop-profile/SKILL.md
+5a6ead10e0c9bd3d1126afeb394a58b30ea35a475b7dc36cc83019bd2f048d51  langsmith-prompts/b2mu-coach-system-prompt/SKILL.md
+08fff46d9bafa6f7fb6c0cf8b691669f1d62c25af70c209c99a29f3e2e2fe229  langsmith-prompts/b2mu-course-detail/SKILL.md
+3429de38c673c46d190204a74e130161e84af46ff2dd2d672f6767f1af7b8f6b  langsmith-prompts/b2mu-ultra-running-science/SKILL.md
 
-Skill files under `skills/` are unmodified copies of the 13 `b2mu-*` skills.
+Skill files under `skills/` are unmodified copies of the 13 `b2mu-*` skills. Files under `langsmith-prompts/` are the five prompt exports supplied by the user on 2026-10-30, unmodified.
